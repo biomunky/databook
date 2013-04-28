@@ -12,5 +12,6 @@
                  [incanter/incanter-excel "1.4.1"]
                  [org.clojure/java.jdbc "0.2.3"]
                  [org.xerial/sqlite-jdbc "3.7.2"]
+                 [enlive "1.1.1"]
                  ]
   :main databook.core)
