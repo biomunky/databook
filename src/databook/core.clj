@@ -9,6 +9,21 @@
 (defn -main [& args] 
 
     ;;
+    ;; CHAPTER 2 
+    ;;
+
+    ;;clean a 'murican phone number
+    #_(println (clean-us-phone-number "123-345-2890"))
+    #_(println (clean-us-phone-number "123 095 2890"))
+
+    ;;normalizing data with lookup tables
+    #_(println (normalise-state "Alabama"))
+    #_(println (normalise-state "WI"))
+    #_(println (normalise-state "TEXAS"))
+
+
+
+    ;;
     ;; CHAPTER 1
     ;; excluded the html scraping and RDF/Sparql stuff
     ;; it holds 0 interest for me at this time
@@ -30,13 +45,4 @@
     ;;read some data from an sqlite DB \o/
     #_(println db-data)
     #_(println (chp1/load-xml-data "resources/sample.xml" down right))
-
-    ;;
-    ;; CHAPTER 2 
-    ;;
-
-    ;;clean a 'murican phone number
-    (println (clean-us-phone-number "123-345-2890"))
-    (println (clean-us-phone-number "123 095 2890"))
-
     )
