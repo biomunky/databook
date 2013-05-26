@@ -4,7 +4,7 @@
 ;; it holds 0 interest for me at this time
 ;;
 
-(ns databook.chp1 
+(ns databook.chp1
   (:use
     [incanter.core :as core]
     [incanter.io :as io]
@@ -13,24 +13,24 @@
     [clojure.java.jdbc :exclude [resultset-seq]]
     [clojure.zip :exclude [next replace remove]]
     [clojure.xml])
-  
+
   (:require
     [clojure [string :as string]])
-  
+
   (:import [java.net URL]))
 
 ;; read a standard csv file
 (def some-data (io/read-dataset "resources/sample.csv"))
 
 ;; read some json into an incanter dataset
-(def some-json 
+(def some-json
     (core/to-dataset
         (read-json
             (slurp "resources/sample.json"))))
 
 ;; example of using getting stuff out of datasets
-(def people 
-    (map 
+(def people
+    (map
         #(let [{r :role f :firstname l :lastname} %1 ]
             (str "the role of " f " " l " is " r))
     (:rows some-json)))
@@ -78,7 +78,12 @@
         ;;convert nodes to a sequence of maps
         (map #(mapcat data-map %))
         (map #(apply array-map %))
-        
+
         ;; make it into an incanter dataset
-        core/to-dataset  
+        core/to-dataset
         )))
+
+(defn name
+  "doc-string"
+  [coll]
+  (reduce (fn [p n] (cons p n) ) [] coll))
