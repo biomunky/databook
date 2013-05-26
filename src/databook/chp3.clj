@@ -56,15 +56,58 @@
   (fn [] (update-totals fields data-chunk)))
 
 ;; run the code
-(defn main
-  ([data-file] (main data-file [:HU100 :P035001] 5))
+(defn main-ref
+  ([data-file] (main-ref data-file [:HU100 :P035001] 5))
   ([data-file fields chunk-count]
-     (doall
-      (->>
-      (lazy-read-csv data-file)
-      with-header
-      (partition-all chunk-count)[
-      (map (partial thunk-update fields))
-      (map future-call)
-      (map deref)))
-     (float (/ @total-families @total-housing-units))))
+     (doall (->>
+             (lazy-read-csv data-file)
+             with-header
+             (partition-all chunk-count)
+             (map (partial thunk-update)
+             (map future-call)
+             (map deref)))
+            (float (/ @total-families @total-housing-units)))))
+
+
+  ;;
+  ;; DOING THE SAME WITH AGENTS
+  ;;
+  ;; agent <- sent & send-off
+  ;; agent <- send + 4
+  ;; @agent => x + 4
+  ;;
+
+  (defn accum-sums
+    [a b] (mapv + a b))
+
+  ;; takes pair of numbers and divides them - generates the ratio
+  (defn div-vec [[a b]]
+    (float (/ a b)))
+
+  ;; makes working with agents easier - takes an agent and waits for all messages
+  ;; in its queue to be processed
+
+  (defn force-val [a]
+    (await a) @a)
+
+  ;; run the process
+  (defn main-agent
+    ([data-file] (main-agent data-file [:P035001 :HU100] 5 5))
+    ([data-file fields agent-count chunk-count]
+       (let [mzero (mapv (constantly 0) fields)
+             ;;create the agents - set to 0
+             agents (map agent (take agent-count (repeat mzero)))]
+         (dorun
+          (->> (lazy-read-csv data-file)
+               with-header
+               (partition-all chunk-count)
+               (map #(send %1 sum-items fields %2)
+                    (cycle agents))))
+         (->> agents
+              (map force-val)
+              (reduce accum-sums mzero)
+              div-vec))))
+
+;; there's a chance that the agent tasks are being retried because there's
+;; a clash - values are being updated at the same time.
+;; this can be avoided by using commute
