@@ -6,6 +6,7 @@
   :repositories [["conjars.org" "http://conjars.org/repo"]]
   :dependencies [
                  [org.clojure/clojure "1.5.1"]
+                 [incanter "1.4.1"]
                  [incanter/incanter-core "1.4.1"]
                  [incanter/incanter-io "1.4.1"]
                  [org.clojure/data.csv "0.1.2"]
